@@ -40,3 +40,11 @@ class ListTest :
     assert(reference.takeRec(3) == List(1, 2, 3))
     assert(reference.takeRight(3) == List(2, 3, 4))
     assert(reference.takeRightRec(3) == List(2, 3, 4))
+
+  @Test
+  def testCollect(): Unit =
+    val isEven: PartialFunction[Int, String] = {
+      case x if x%2==0 => x + " is even"  //does filter with case if and map with =>
+    }
+    assert(reference.collect(isEven) == List("2 is even", "4 is even"))
+    assert(reference.collect({ case x if x>2 => x+10 }) == List(13,14))

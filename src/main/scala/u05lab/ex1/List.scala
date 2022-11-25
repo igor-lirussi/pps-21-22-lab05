@@ -136,6 +136,8 @@ enum List[A]:
 
   def takeRightRec(n: Int): List[A] = this.reverse().takeRec(n).reverse() //double reverse cause: 1234 -reverse-> 4321 -take-> 432 -reverse-> 234
 
+  //giving to filter parFun.isDefined returns Boolean (if case is verified or not), giving to map parFun applied to remaining
+  def collect[B](partialFunction: PartialFunction[A,B]): List[B] = filter(x=>partialFunction.isDefinedAt(x)).map(x=>partialFunction.apply(x))
 
 // Factories
 object List:
