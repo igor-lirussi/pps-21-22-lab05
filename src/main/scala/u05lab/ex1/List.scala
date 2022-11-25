@@ -2,6 +2,8 @@ package u05lab.ex1
 
 import u05lab.ex1.List
 
+import scala.::
+
 // Ex 1. implement the missing methods both with recursion or with using fold, map, flatMap, and filters
 // List as a pure interface
 enum List[A]:
@@ -59,7 +61,24 @@ enum List[A]:
   def reverse(): List[A] = foldLeft[List[A]](Nil())((l, e) => e :: l)
 
   /** EXERCISES */
-  def zipRight: List[(A, Int)] = ???
+
+  def zipRight: List[(A, Int)] =
+    var i= -1
+    map(elem => {i+=1;(elem, i)})
+
+  def zipRightRec: List[(A, Int)] =
+    def _zipRight(l: List[A], n: Int): List[(A, Int)] = l match
+      case h :: t => (h, n) :: _zipRight(t, n + 1)
+      case _ => Nil()
+
+    _zipRight(this, 0)
+
+  def zipRight1: List[(A, Int)] =
+    this.foldRight((Nil[(A, Int)](), this.length))((elem, acc) => ( (elem, acc._2 -1)::acc._1 , acc._2 - 1 ))._1
+    //start right | accumulator: (built_list, int) | for new elem>(built_list is: (elem, int -1) concat to built_list),
+    //                           ( acc._1 ,acc._2)                                             int is now : int - 1)
+    //                                                                   foldRight returns the (built_list, int), we return only _1 (built list)
+                                                                                                
 
   def partition(pred: A => Boolean): (List[A], List[A]) = ???
 
