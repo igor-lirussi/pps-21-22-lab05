@@ -16,3 +16,8 @@ class ListTest :
     assert(list.zipRight1 == List((1, 0), (2, 1), (3, 2), (4, 3), (5, 4)))
     assert(reference.zipRight1 == List((1, 0), (2, 1), (3, 2), (4, 3)))
 
+  @Test
+  def testPartition(): Unit =
+    assert(reference.partition(_ % 2 == 0) == (List(2, 4), List(1, 3)))
+    assert(reference.partition2(_ % 2 == 0) == (List(2, 4), List(1, 3)))
+    assert(reference.partitionRec(_ % 2 == 0) == (List(2, 4), List(1, 3)))

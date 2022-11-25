@@ -78,9 +78,22 @@ enum List[A]:
     //start right | accumulator: (built_list, int) | for new elem>(built_list is: (elem, int -1) concat to built_list),
     //                           ( acc._1 ,acc._2)                                             int is now : int - 1)
     //                                                                   foldRight returns the (built_list, int), we return only _1 (built list)
-                                                                                                
 
-  def partition(pred: A => Boolean): (List[A], List[A]) = ???
+
+  def partition(pred: A => Boolean): (List[A], List[A]) =
+    //start right | accumulator (List,List) | for new elem =>
+    this.foldRight( (Nil[A](), Nil[A]()) )( (elem, accCouple) => elem match
+      case elem if pred(elem) => (elem::accCouple._1, accCouple._2) //accumulator now is (elem added list1, list2)
+      case _ => (accCouple._1, elem::accCouple._2) //accumulator now is (list1, elem added list2)
+    )
+
+  def partitionRec(pred: A => Boolean): (List[A], List[A]) = this match
+    case h :: t if pred(h) => val coupleLists = t.partitionRec(pred); (h :: coupleLists._1, coupleLists._2)
+    case h :: t =>            val coupleLists = t.partitionRec(pred); (coupleLists._1, h :: coupleLists._2)
+    case _ => (Nil(), Nil())
+
+  def partition2(pred: A => Boolean): (List[A], List[A]) = (filter(pred), filter(A => !pred(A)))
+  //tuple with a list that is filtered with pred and a list that is filtered with the opposite of pred  /!\COSTSx2!
 
   def span(pred: A => Boolean): (List[A], List[A]) = ???
 
