@@ -21,3 +21,10 @@ class ListTest :
     assert(reference.partition(_ % 2 == 0) == (List(2, 4), List(1, 3)))
     assert(reference.partition2(_ % 2 == 0) == (List(2, 4), List(1, 3)))
     assert(reference.partitionRec(_ % 2 == 0) == (List(2, 4), List(1, 3)))
+
+  @Test
+  def testSpan(): Unit =
+    assert(reference.span(_ % 2 != 0) == (List(1), List(2, 3, 4)))
+    assert(reference.span(_ < 3) ==  (List(1, 2), List(3, 4)))
+    assert(reference.spanRec(_ % 2 != 0) == (List(1), List(2, 3, 4)))
+    assert(reference.spanRec(_ < 3) == (List(1, 2), List(3, 4)))

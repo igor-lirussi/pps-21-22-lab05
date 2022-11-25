@@ -23,6 +23,8 @@ enum List[A]:
     case h :: t => h :: t.append(list)
     case _ => list
 
+  def :+(elem:A): List[A] = this.append(List(elem))
+  
   def foreach(consumer: A => Unit): Unit = this match
     case h :: t => consumer(h); t.foreach(consumer)
     case _ =>
@@ -95,7 +97,18 @@ enum List[A]:
   def partition2(pred: A => Boolean): (List[A], List[A]) = (filter(pred), filter(A => !pred(A)))
   //tuple with a list that is filtered with pred and a list that is filtered with the opposite of pred  /!\COSTSx2!
 
-  def span(pred: A => Boolean): (List[A], List[A]) = ???
+  def span(pred: A => Boolean): (List[A], List[A]) =
+    //start left| accumulator ((List,List),valid) | for new elem =>
+    this.foldLeft( ((Nil[A](), Nil[A]()), true) )( (accTuple, elem) => elem match
+      case elem if pred(elem) && accTuple._2 => ((accTuple._1._1:+elem, accTuple._1._2), accTuple._2) //accumulator now is ((list1+elem, list2), valid)
+      case _ => ((accTuple._1._1, accTuple._1._2:+elem), false) //accumulator now is ((list1, list2+elem), INVALID) //INVALID will now on invalidate the case above even if pred(elem) is true
+    )._1 //since foldLeft returns ((List,List),valid) we take ._1 to get (List,List)
+         // also that's why we didn't use (List, List, valid), cause then we had to make a tuple with two elements from a tuple with three
+
+  
+  def spanRec(pred: A => Boolean): (List[A], List[A]) = this match
+    case h :: t if pred(h) => val coupleLists = t.spanRec(pred); (h :: coupleLists._1, coupleLists._2)
+    case _ => (Nil(), this)
 
   /** @throws UnsupportedOperationException if the list is empty */
   def reduce(op: (A, A) => A): A = ???
