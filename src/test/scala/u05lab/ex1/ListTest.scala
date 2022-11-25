@@ -32,3 +32,11 @@ class ListTest :
   @Test
   def testReduce(): Unit =
     assert(reference.reduce(_ + _) == 10)
+    assert(List(10).reduce(_ + _)== 10)
+
+  @Test
+  def testTake():  Unit =
+    assert(reference.take(3) == List(1, 2, 3))
+    assert(reference.takeRec(3) == List(1, 2, 3))
+    assert(reference.takeRight(3) == List(2, 3, 4))
+    assert(reference.takeRightRec(3) == List(2, 3, 4))

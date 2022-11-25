@@ -115,7 +115,27 @@ enum List[A]:
     case h :: t => t.foldRight(h)(op) //fold left with head as initializer
     case Nil() => throw UnsupportedOperationException() //if list empty (no head) throws exception
 
-  def takeRight(n: Int): List[A] = ???
+
+  def take(n: Int): List[A] =
+    //start left| accumulator (List,n) | for new elem =>
+    foldLeft( (Nil[A](), n) )( (accCouple, elem) => elem match
+    case _ if accCouple._2>0 => (accCouple._1:+elem, accCouple._2-1) //if n>0 add accumulator is now (List+elem, n-1)
+    case _ => accCouple //otherwise return accumulator
+  )._1 //from the accumulator returned by fold (list, n) we return only list
+
+  def takeRight(n: Int): List[A] =
+    //start right| accumulator (List,n) | for new elem =>
+    foldRight( (Nil[A](), n) )( (elem, accCouple) => elem match
+    case _ if accCouple._2 > 0 => (elem :: accCouple._1, accCouple._2 - 1) //if n>0 add accumulator is now (elem added List, n-1)
+    case _ => accCouple //otherwise return accumulator
+  )._1 //from the accumulator returned by fold (list, n) we return only list
+
+  def takeRec(n:Int):List[A] = this match
+    case h :: t if n>0 => h :: t.takeRec(n-1)
+    case _ => Nil()
+
+  def takeRightRec(n: Int): List[A] = this.reverse().takeRec(n).reverse() //double reverse cause: 1234 -reverse-> 4321 -take-> 432 -reverse-> 234
+
 
 // Factories
 object List:
@@ -139,3 +159,4 @@ object List:
   catch case ex: Exception => println(ex) // prints exception
   println(List(10).reduce(_ + _)) // 10
   println(reference.takeRight(3)) // List(2, 3, 4)
+  println(reference.take(3)) // List(1, 2, 3)
