@@ -28,3 +28,7 @@ class ListTest :
     assert(reference.span(_ < 3) ==  (List(1, 2), List(3, 4)))
     assert(reference.spanRec(_ % 2 != 0) == (List(1), List(2, 3, 4)))
     assert(reference.spanRec(_ < 3) == (List(1, 2), List(3, 4)))
+
+  @Test
+  def testReduce(): Unit =
+    assert(reference.reduce(_ + _) == 10)

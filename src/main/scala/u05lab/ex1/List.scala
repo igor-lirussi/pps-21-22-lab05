@@ -24,7 +24,7 @@ enum List[A]:
     case _ => list
 
   def :+(elem:A): List[A] = this.append(List(elem))
-  
+
   def foreach(consumer: A => Unit): Unit = this match
     case h :: t => consumer(h); t.foreach(consumer)
     case _ =>
@@ -105,13 +105,15 @@ enum List[A]:
     )._1 //since foldLeft returns ((List,List),valid) we take ._1 to get (List,List)
          // also that's why we didn't use (List, List, valid), cause then we had to make a tuple with two elements from a tuple with three
 
-  
+
   def spanRec(pred: A => Boolean): (List[A], List[A]) = this match
     case h :: t if pred(h) => val coupleLists = t.spanRec(pred); (h :: coupleLists._1, coupleLists._2)
     case _ => (Nil(), this)
 
   /** @throws UnsupportedOperationException if the list is empty */
-  def reduce(op: (A, A) => A): A = ???
+  def reduce(op: (A, A) => A): A = this match
+    case h :: t => t.foldRight(h)(op) //fold left with head as initializer
+    case Nil() => throw UnsupportedOperationException() //if list empty (no head) throws exception
 
   def takeRight(n: Int): List[A] = ???
 
