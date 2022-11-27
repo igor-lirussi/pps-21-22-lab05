@@ -70,3 +70,13 @@ object  Conference:
         override def toString: String = reviewList.foldLeft("\nart|REL\tSIG\tCON\tFIN")( (acc,rev)=>acc+"\n"+rev._1+" |"+
           rev._2.foldLeft("")( (acc,couple)=>acc+"\t"+couple._2) )
 
+        //NOTE: averageFinalScore and averageWeightedFinalScore could be unified in a function for average per article getting a strategy for every review
+        def averageScoreWith(scoreStrategyForArticle:Map[Question,Int]=>Double)(art: Int): Double =
+            val accumulator = reviewList.foldLeft((0.0, 0))((acc, elem) => elem match
+                case (article, mapQV) if article==art => (acc._1 + scoreStrategyForArticle(mapQV), acc._2 + 1)
+                case _ => acc
+            )
+            accumulator._1 / accumulator._2
+
+        def averageFinalScore2(art: Int): Double = averageScoreWith(mapQV=>mapQV(Question.FINAL))(art)
+        def averageWeightedFinalScore2(art:Int): Double = averageScoreWith(mapQV=>mapQV(Question.CONFIDENCE)*mapQV(Question.FINAL)/10.0)(art)
